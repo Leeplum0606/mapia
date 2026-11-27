@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIVINE SYNDICATE // 이능력자 마피아 아카이브</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;700;900&family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&display=swap');
+
+  :root {
+    --bg-black: #050508;
+    --bg-panel: #0d0e15;
+    --neon-white: #ffffff;
+    --neon-cyan: #00f3ff;
+    --neon-magenta: #ff0055;
+    --neon-yellow: #fcee0a;
+    --neon-purple: #b86bff;
+    --text-main: #ffffff;
+    --text-dim: #b8c2d1;
+    --border-color: rgba(255, 255, 255, 0.28);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: var(--bg-black);
+    color: var(--text-main);
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-top: 36px;
+    padding-bottom: 36px;
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* 상단/하단 WARNING 띠 */
+  .warning-ticker {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    height: 32px;
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--neon-yellow),
+      var(--neon-yellow) 16px,
+      #111 16px,
+      #111 32px
+    );
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    z-index: 9999;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    box-shadow: 0 0 15px rgba(252, 238, 10, 0.35);
+  }
+
+  .warning-ticker.top { top: 0; }
+  .warning-ticker.bottom { bottom: 0; }
+
+  .ticker-track {
+    display: flex;
+    white-space: nowrap;
+    animation: marquee 20s linear infinite;
+  }
+
+  .warning-ticker.bottom .ticker-track {
+    animation-direction: reverse;
+  }
+
+  .ticker-text {
+    background: #050508;
+    color: var(--neon-yellow);
+    font-family: 'Orbitron', 'Noto Sans KR', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 2px;
+    padding: 3px 18px;
+    margin: 0 24px;
+    border: 1px solid var(--neon-yellow);
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* 공통 레이아웃 */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 20px 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .page {
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .page.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 네비게이션 바 (로그인 후 노출) */
+  .top-nav {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 22px;
+    background: rgba(13, 14, 21, 0.95);
+    border: 1px solid var(--border-color);
+    margin-bottom: 30px;
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  }
+
+  .top-nav.visible {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-brand {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    color: #ffffff;
+    font-size: 16px;
+    letter-spacing: 2px;
+    cursor: pointer;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .cyber-btn {
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+    padding: 8px 16px;
+    font-family: 'Share Tech Mono', 'Noto Sans KR', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .cyber-btn:hover {
+    background: #ffffff;
+    color: #050508;
+  }
+
+  /* 진영별 버튼 컬러 */
+  .cyber-btn.zeus {
+    color: var(--neon-yellow);
+    border-color: var(--neon-yellow);
+  }
+  .cyber-btn.zeus:hover {
+    background: var(--neon-yellow);
+    color: #050508;
+  }
+
+  .cyber-btn.poseidon {
+    color: var(--neon-cyan);
+    border-color: var(--neon-cyan);
+  }
+  .cyber-btn.poseidon:hover {
+    background: var(--neon-cyan);
+    color: #050508;
+  }
+
+  .cyber-btn.hades {
+    color: var(--neon-purple);
+    border-color: var(--neon-purple);
+  }
+  .cyber-btn.hades:hover {
+    background: var(--neon-purple);
+    color: #050508;
+  }
+
+  .cyber-btn.shinmyeong {
+    color: var(--neon-magenta);
+    border-color: var(--neon-magenta);
+  }
+  .cyber-btn.shinmyeong:hover {
+    background: var(--neon-magenta);
+    color: #ffffff;
+  }
+
+  .cyber-btn.magenta {
+    color: var(--neon-magenta);
+    border-color: var(--neon-magenta);
+  }
+  .cyber-btn.magenta:hover {
+    background: var(--neon-magenta);
+    color: #ffffff;
+  }
+
+  /* 1페이지: 로그인 화면 */
+  .login-wrapper {
+    min-height: calc(100vh - 140px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-box {
+    width: 100%;
+    max-width: 440px;
+    background: var(--bg-panel);
+    border: 1px solid #ffffff;
+    padding: 40px 32px;
+    text-align: center;
+    position: relative;
+    clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
+  }
+
+  .login-sub {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--neon-magenta);
+    font-size: 12px;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+  }
+
+  .login-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+
+  .login-desc {
+    color: var(--text-dim);
+    font-size: 13px;
+    margin-bottom: 28px;
+  }
+
+  .pin-display {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .pin-slot {
+    width: 42px;
+    height: 52px;
+    border: 1px solid #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    color: var(--neon-yellow);
+  }
+
+  .pin-input {
+    width: 100%;
+    background: #050508;
+    border: 1px solid var(--border-color);
+    color: #ffffff;
+    padding: 12px;
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    text-align: center;
+    letter-spacing: 8px;
+    outline: none;
+    margin-bottom: 14px;
+  }
+
+  .pin-input:focus {
+    border-color: #ffffff;
+  }
+
+  .login-error {
+    color: var(--neon-magenta);
+    font-size: 12px;
+    min-height: 18px;
+    margin-bottom: 12px;
+    font-family: 'Share Tech Mono', 'Noto Sans KR', monospace;
+  }
+
+  /* 2페이지: 세계관 */
+  .hero-quote {
+    border-left: 4px solid var(--neon-magenta);
+    background: linear-gradient(90deg, rgba(255, 0, 85, 0.14), transparent);
+    padding: 28px 26px;
+    margin-bottom: 36px;
+  }
+
+  .hero-quote h1 {
+    font-size: clamp(24px, 4vw, 38px);
+    font-weight: 900;
+    font-style: italic;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+    line-height: 1.35;
+  }
+
+  .section-block {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    padding: 26px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .section-italic-title {
+    font-size: 22px;
+    font-weight: 900;
+    font-style: italic;
+    color: #ffffff;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+
+  .lore-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .lore-list li {
+    position: relative;
+    padding-left: 20px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #ffffff;
+  }
+
+  .lore-list li::before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    color: var(--neon-yellow);
+  }
+
+  /* 4대 조직 타이포 이미지 카드 */
+  .org-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+    margin-top: 16px;
+  }
+
+  .org-typo-card {
+    background: #08090e;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 34px 20px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s ease;
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  }
+
+  .org-typo-card::before {
+    content: attr(data-en);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-8deg);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 46px;
+    font-weight: 900;
+    opacity: 0.07;
+    white-space: nowrap;
+    pointer-events: none;
+    transition: all 0.25s;
+  }
+
+  .org-typo-card:hover {
+    transform: translateY(-5px);
+    border-color: #ffffff;
+  }
+
+  .org-typo-card:hover::before {
+    opacity: 0.16;
+    transform: translate(-50%, -50%) rotate(-4deg) scale(1.08);
+  }
+
+  .org-typo-en {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .org-typo-kr {
+    font-family: 'Black Han Sans', 'Noto Sans KR', sans-serif;
+    font-size: 36px;
+    letter-spacing: 3px;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .org-typo-hint {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .org-zeus { border-color: rgba(252, 238, 10, 0.5); }
+  .org-zeus .org-typo-en, .org-zeus .org-typo-kr { color: var(--neon-yellow); }
+
+  .org-poseidon { border-color: rgba(0, 243, 255, 0.5); }
+  .org-poseidon .org-typo-en, .org-poseidon .org-typo-kr { color: var(--neon-cyan); }
+
+  .org-hades { border-color: rgba(184, 107, 255, 0.55); }
+  .org-hades .org-typo-en, .org-hades .org-typo-kr { color: var(--neon-purple); }
+
+  .org-shinmyeong { border-color: rgba(255, 0, 85, 0.55); }
+  .org-shinmyeong .org-typo-en, .org-shinmyeong .org-typo-kr { color: var(--neon-magenta); }
+
+  /* 인물 소개 페이지 */
+  .org-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
+    margin-bottom: 28px;
+  }
+
+  .org-header h2 {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 2px;
+  }
+
+  .char-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+
+  .char-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .char-header-tag {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+    padding-bottom: 10px;
+  }
+
+  .char-name {
+    font-size: 20px;
+    font-weight: 900;
+    color: #ffffff;
+  }
+
+  .char-deity {
+    font-family: 'Share Tech Mono', 'Noto Sans KR', monospace;
+    font-size: 13px;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 3px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+  }
+
+  .char-img-slot {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: #07080c;
+    border: 1px dashed rgba(255, 255, 255, 0.35);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .char-img-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+
+  .char-img-slot.has-img img {
+    display: block;
+  }
+
+  .char-img-slot.has-img .img-placeholder {
+    display: none;
+  }
+
+  .img-placeholder {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 13px;
+    padding: 16px;
+  }
+
+  .img-placeholder span {
+    display: block;
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    color: #ffffff;
+    margin-bottom: 6px;
+  }
+
+  .char-desc-box {
+    width: 100%;
+    min-height: 110px;
+    background: #07080c;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+  }
+
+  .char-desc-box:focus {
+    border-color: #ffffff;
+  }
+
+  /* 마지막 페이지: 랜덤 신격/권능/등급 생성기 */
+  .gacha-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .gacha-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .id-upload-panel {
+    background: var(--bg-panel);
+    border: 1px solid #ffffff;
+    padding: 22px;
+    text-align: center;
+  }
+
+  .id-photo-frame {
+    width: 180px;
+    height: 230px;
+    margin: 0 auto 16px;
+    border: 2px solid #ffffff;
+    background: #07080c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .id-photo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+
+  .id-photo-frame.has-img img {
+    display: block;
+  }
+
+  .id-photo-frame.has-img .id-placeholder {
+    display: none;
+  }
+
+  .id-placeholder {
+    color: var(--text-dim);
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  .name-input {
+    width: 100%;
+    background: #050508;
+    border: 1px solid var(--border-color);
+    color: #ffffff;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 14px;
+    outline: none;
+  }
+
+  .result-dossier {
+    background: var(--bg-panel);
+    border: 1px solid var(--neon-magenta);
+    padding: 28px;
+    position: relative;
+  }
+
+  .dossier-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+  }
+
+  .rank-badge {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 42px;
+    font-weight: 900;
+    padding: 4px 20px;
+    border: 2px solid currentColor;
+    line-height: 1.1;
+  }
+
+  .rank-S { color: var(--neon-yellow); }
+  .rank-A { color: var(--neon-magenta); }
+  .rank-B { color: var(--neon-cyan); }
+  .rank-C { color: #86efac; }
+  .rank-D { color: var(--neon-purple); }
+  .rank-E { color: #cbd5e1; }
+  .rank-F { color: #f87171; }
+
+  .dossier-row {
+    margin-bottom: 18px;
+  }
+
+  .dossier-label {
+    font-family: 'Share Tech Mono', 'Noto Sans KR', monospace;
+    font-size: 12px;
+    color: #ffffff;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .dossier-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .dossier-desc {
+    font-size: 15px;
+    line-height: 1.65;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.45);
+    padding: 14px;
+    border-left: 3px solid #ffffff;
+  }
+</style>
+</head>
+<body>
+
+  <!-- 상단 WARNING 띠 -->
+  <div class="warning-ticker top">
+    <div class="ticker-track">
+      <span class="ticker-text">⚠ WARNING // 위험 : 비인가 이능력자 접근 통제 구역</span>
+      <span class="ticker-text">⚠ WARNING // 위험 : 고대 신격 반응 감지됨</span>
+      <span class="ticker-text">⚠ WARNING // 위험 : 비인가 이능력자 접근 통제 구역</span>
+      <span class="ticker-text">⚠ WARNING // 위험 : 고대 신격 반응 감지됨</span>
+      <span class="ticker-text">⚠ WARNING // 위험 : 비인가 이능력자 접근 통제 구역</span>
+      <span class="ticker-text">⚠ WARNING // 위험 : 고대 신격 반응 감지됨</span>
+    </div>
+  </div>
+
+  <!-- 하단 WARNING 띠 -->
+  <div class="warning-ticker bottom">
+    <div class="ticker-track">
+      <span class="ticker-text">⚠ WARNING // 위험 : 국가 통제 불능 구역 — 신격 권한 주의</span>
+      <span class="ticker-text">⚠ WARNING // 위험 : 마피아 조직 기밀 아카이브</span>
+      <span class="ticker-text">⚠ WARNING // 위험 : 국가 통제 불능 구역 — 신격 권한 주의</span>
+      <span class="ticker-text">⚠ WARNING // 위험 : 마피아 조직 기밀 아카이브</span>
+      <span class="ticker-text">⚠ WARNING // 위험 : 국가 통제 불능 구역 — 신격 권한 주의</span>
+      <span class="ticker-text">⚠ WARNING // 위험 : 마피아 조직 기밀 아카이브</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- 상단 네비게이션 (각 진영 색상에 맞춤) -->
+    <nav id="topNav" class="top-nav">
+      <div class="nav-brand" onclick="showPage('world')">// SYNDICATE ARCHIVE</div>
+      <div class="nav-links">
+        <button class="cyber-btn" onclick="showPage('world')">세계관</button>
+        <button class="cyber-btn zeus" onclick="showPage('zeus')">제우스</button>
+        <button class="cyber-btn poseidon" onclick="showPage('poseidon')">포세이돈</button>
+        <button class="cyber-btn hades" onclick="showPage('hades')">하데스</button>
+        <button class="cyber-btn shinmyeong" onclick="showPage('shinmyeong')">신명</button>
+        <button class="cyber-btn" onclick="showPage('generator')">신격 판독기</button>
+      </div>
+    </nav>
+
+    <!-- 1페이지: 로그인 화면 -->
+    <section id="page-login" class="page active">
+      <div class="login-wrapper">
+        <div class="login-box">
+          <div class="login-sub">RESTRICTED TERMINAL // ACCESS LEVEL 0</div>
+          <h1 class="login-title">SECURITY LOGIN</h1>
+          <p class="login-desc">접속을 위해 보안 코드 숫자 6자리를 입력하십시오.</p>
+
+          <div class="pin-display" id="pinDisplay">
+            <div class="pin-slot">-</div>
+            <div class="pin-slot">-</div>
+            <div class="pin-slot">-</div>
+            <div class="pin-slot">-</div>
+            <div class="pin-slot">-</div>
+            <div class="pin-slot">-</div>
+          </div>
+
+          <input 
+            type="password" 
+            id="pinInput" 
+            class="pin-input" 
+            maxlength="6" 
+            inputmode="numeric" 
+            placeholder="000000"
+            autocomplete="off"
+          >
+          <div id="loginError" class="login-error"></div>
+          <button class="cyber-btn" style="width: 100%; padding: 14px;" onclick="attemptLogin()">시스템 진입 // ENTER</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2페이지: 세계관 -->
+    <section id="page-world" class="page">
+      <div class="hero-quote">
+        <h1>"국가 권력이 약해지고 마피아들이 활개치는 세상"</h1>
+      </div>
+
+      <div class="section-block">
+        <h2 class="section-italic-title">[이능력자]</h2>
+        <ul class="lore-list">
+          <li>'고대의 신격'의 힘을 빌려와 권능을 사용하는 특별한 자. F급~S급으로 나뉘며 다양한 조직에 소속되어있다.</li>
+          <li>대부분 보호받기 위해 조직에 소속되나 무소속으로 활동하는 자들도 있다.</li>
+        </ul>
+      </div>
+
+      <div class="section-block">
+        <h2 class="section-italic-title">[대한민국의 4대 조직]</h2>
+        <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 14px;">조직을 선택하면 소속 인물 프로필 아카이브로 이동합니다.</p>
+        <div class="org-grid">
+          <div class="org-typo-card org-zeus" data-en="ZEUS" onclick="showPage('zeus')">
+            <span class="org-typo-en">SYNDICATE 01 // ZEUS</span>
+            <span class="org-typo-kr">제우스</span>
+            <span class="org-typo-hint">[ CLICK TO ACCESS FILES ]</span>
+          </div>
+          <div class="org-typo-card org-poseidon" data-en="POSEIDON" onclick="showPage('poseidon')">
+            <span class="org-typo-en">SYNDICATE 02 // POSEIDON</span>
+            <span class="org-typo-kr">포세이돈</span>
+            <span class="org-typo-hint">[ CLICK TO ACCESS FILES ]</span>
+          </div>
+          <div class="org-typo-card org-hades" data-en="HADES" onclick="showPage('hades')">
+            <span class="org-typo-en">SYNDICATE 03 // HADES</span>
+            <span class="org-typo-kr">하데스</span>
+            <span class="org-typo-hint">[ CLICK TO ACCESS FILES ]</span>
+          </div>
+          <div class="org-typo-card org-shinmyeong" data-en="SHINMYEONG" onclick="showPage('shinmyeong')">
+            <span class="org-typo-en">SYNDICATE 04 // SHINMYEONG</span>
+            <span class="org-typo-kr">신명</span>
+            <span class="org-typo-hint">[ CLICK TO ACCESS FILES ]</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: right; margin-top: 20px;">
+        <button class="cyber-btn magenta" onclick="showPage('generator')">▶ 나의 신격 / 권능 / 등급 판독하기</button>
+      </div>
+    </section>
+
+    <!-- 제우스 인물 페이지 -->
+    <section id="page-zeus" class="page">
+      <div class="org-header">
+        <h2 style="color: var(--neon-yellow);">[조직 : 제우스] 소속 인물</h2>
+        <button class="cyber-btn" onclick="showPage('world')">◀ 세계관으로</button>
+      </div>
+      <div class="char-grid" id="grid-zeus"></div>
+    </section>
+
+    <!-- 포세이돈 인물 페이지 -->
+    <section id="page-poseidon" class="page">
+      <div class="org-header">
+        <h2 style="color: var(--neon-cyan);">[조직 : 포세이돈] 소속 인물</h2>
+        <button class="cyber-btn" onclick="showPage('world')">◀ 세계관으로</button>
+      </div>
+      <div class="char-grid" id="grid-poseidon"></div>
+    </section>
+
+    <!-- 하데스 인물 페이지 -->
+    <section id="page-hades" class="page">
+      <div class="org-header">
+        <h2 style="color: var(--neon-purple);">[조직 : 하데스] 소속 인물</h2>
+        <button class="cyber-btn" onclick="showPage('world')">◀ 세계관으로</button>
+      </div>
+      <div class="char-grid" id="grid-hades"></div>
+    </section>
+
+    <!-- 신명 인물 페이지 -->
+    <section id="page-shinmyeong" class="page">
+      <div class="org-header">
+        <h2 style="color: var(--neon-magenta);">[조직 : 신명] 소속 인물</h2>
+        <button class="cyber-btn" onclick="showPage('world')">◀ 세계관으로</button>
+      </div>
+      <div class="char-grid" id="grid-shinmyeong"></div>
+    </section>
+
+    <!-- 마지막 페이지: 랜덤 신격 / 권능 / 등급 판독기 -->
+    <section id="page-generator" class="page">
+      <div class="org-header">
+        <h2 style="color: var(--neon-magenta);">[신격 각성 및 등급 판독 시스템]</h2>
+        <button class="cyber-btn" onclick="showPage('world')">◀ 세계관으로</button>
+      </div>
+
+      <div class="gacha-layout">
+        <!-- 좌측: 증명사진 업로드 & 코드명 입력 -->
+        <div class="id-upload-panel">
+          <div class="dossier-label" style="margin-bottom: 10px;">SUBJECT ID PHOTO</div>
+          <label class="id-photo-frame" id="idPhotoFrame">
+            <img id="idPhotoPreview" alt="증명사진">
+            <div class="id-placeholder">
+              <div style="font-size: 24px; color: #ffffff; margin-bottom: 6px;">+</div>
+              클릭하여 증명사진 업로드
+            </div>
+            <input type="file" accept="image/*" style="display:none;" onchange="handleIdPhoto(event)">
+          </label>
+          <input type="text" id="subjectName" class="name-input" placeholder="이름 입력 (선택)">
+          <button class="cyber-btn magenta" style="width: 100%; padding: 14px;" onclick="generateAwakening()">신격 & 권능 판독 실행</button>
+        </div>
+
+        <!-- 우측: 판독 결과서 -->
+        <div class="result-dossier">
+          <div class="dossier-top">
+            <div>
+              <div class="dossier-label">AWAKENING DOSSIER // 판독 결과서</div>
+              <div id="resSubject" style="font-size: 22px; font-weight: 900; color: #ffffff;">대상자 : 미지정 피험자</div>
+            </div>
+            <div style="text-align: center;">
+              <div class="dossier-label">RANK</div>
+              <div id="resRank" class="rank-badge rank-B">-</div>
+            </div>
+          </div>
+
+          <div class="dossier-row">
+            <div class="dossier-label">MYTHOLOGY // 신화 계통</div>
+            <div id="resMyth" class="dossier-value">판독 대기 중...</div>
+          </div>
+
+          <div class="dossier-row">
+            <div class="dossier-label">PATRON DEITY // 계약 신격</div>
+            <div id="resDeity" class="dossier-value" style="color: var(--neon-yellow);">판독 버튼을 눌러 신격을 각성하십시오.</div>
+          </div>
+
+          <div class="dossier-row">
+            <div class="dossier-label">AUTHORITY & ABILITY // 부여된 권능</div>
+            <div id="resPower" class="dossier-desc">증명사진을 등록하고 판독을 실행하면 그리스로마(기존 인물 제외), 일본 신화, 한국 설화, 북유럽·이집트 신화 등의 신격과 고유 권능, 등급(F~S)이 산출됩니다.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+  // 1. 로그인 PIN 처리
+  const pinInput = document.getElementById('pinInput');
+  const pinSlots = document.querySelectorAll('#pinDisplay .pin-slot');
+  const loginError = document.getElementById('loginError');
+
+  pinInput.addEventListener('input', () => {
+    pinInput.value = pinInput.value.replace(/[^0-9]/g, '');
+    const val = pinInput.value;
+    pinSlots.forEach((slot, idx) => {
+      slot.textContent = val[idx] ? '●' : '-';
+    });
+    loginError.textContent = '';
+  });
+
+  pinInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') attemptLogin();
+  });
+
+  function attemptLogin() {
+    if (/^\d{6}$/.test(pinInput.value)) {
+      document.getElementById('topNav').classList.add('visible');
+      showPage('world');
+    } else {
+      loginError.textContent = 'ERROR: 반드시 숫자 6자리를 입력해야 합니다.';
+    }
+  }
+
+  // 2. 페이지 전환
+  function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + pageId).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // 3. 조직별 인물 데이터
+  // imgSrc: 나중에 이미지 파일 경로(예: "./hajawoo.jpg")를 넣으면 바로 표시됩니다.
+  const roster = {
+    zeus: [
+      { id: 'z1', name: '하재우', deity: '제우스', imgSrc: 'photo1.png', desc: '26세\nS급 번개의 권능\n여미새, 자유분방, 가벼움' },
+      { id: 'z2', name: '엄해진', deity: '헤라', imgSrc: 'photo2.png', desc: '33세\nS급 아르고스의 눈을 이용하는 감시의 권능\n잔소리꾼, 뒷처리담당, 은근 감성적' },
+      { id: 'z3', name: '니아', deity: '니케', imgSrc: 'photo3.png', desc: '21세\nS급 가호의 권능\n애교, 질투쟁이, 지략적' }
+    ],
+    poseidon: [
+      { id: 'p1', name: '이세라', deity: '포세이돈', imgSrc: 'photo4.png', desc: '33세\nS급 물의 권능\n호탕함, 세상 모든 여성을 사랑하는, 주당' },
+      { id: 'p2', name: '세레나', deity: '페가수스', imgSrc: 'photo5.png', desc: '28세\nA급 비행과 돌풍의 권능\n자상함, 순수함, 부드러운 카리스마' },
+      { id: 'p3', name: '오은우', deity: '오리온', imgSrc: 'photo6.png', desc: '26세\nS급 물의 화살\n패셔니스타, 친근함, 눈물 많음' }
+    ],
+    hades: [
+      { id: 'h1', name: 'unknown', deity: '하데스', imgSrc: 'photo7.png', desc: '46세\nS급 영혼 지배의 권능\n자상함 뒤의 냉정함, 지배적, 순애보' },
+      { id: 'h2', name: '연아해', deity: '히프노스', imgSrc: 'photo8.png', desc: '20세\nS급 수면의 권능\n게으름, 나태, 침대와 물아일체' },
+      { id: 'h3', name: '배아진', deity: '케로베로스', imgSrc: 'photo9.png', desc: '21세\nB급 감시의 권능\n깍듯함, 예의중시, 열등감' }
+    ],
+    shinmyeong: [
+      { id: 's1', name: '장하연', deity: '장군', imgSrc: 'photo10.png', desc: '36세\nS급 악을 베어내는 참마검\n털털함, 친근함, 권선징악' },
+      { id: 's2', name: '신한울', deity: '바리공주', imgSrc: 'photo11.png', desc: '24세\nS급 생명력을 회복시키는 생명화\n자상함, 부드러움, 섬세함' },
+      { id: 's3', name: '유아랑', deity: '동자동녀', imgSrc: 'photo12.png', desc: '20세\nA급 동자의 예지몽, 동녀의 결계금줄\n오지라퍼, 낙천적, 입 험함' }
+    ]
+  };
+
+  function renderRoster() {
+    Object.keys(roster).forEach(org => {
+      const container = document.getElementById('grid-' + org);
+      container.innerHTML = roster[org].map(char => {
+        const hasImgClass = char.imgSrc ? 'has-img' : '';
+        return `
+          <div class="char-card">
+            <div class="char-header-tag">
+              <span class="char-name">${char.name}</span>
+              <span class="char-deity">${char.deity}</span>
+            </div>
+            <div class="char-img-slot ${hasImgClass}" id="slot-${char.id}">
+              <img src="${char.imgSrc}" alt="${char.name} / ${char.deity}">
+              <div class="img-placeholder">
+                <span>[ ${char.name} / ${char.deity} ]</span>
+                이미지 영역 (코드 imgSrc에 경로 입력)
+              </div>
+            </div>
+           <div class="char-desc-box" style="white-space: pre-line;">${char.desc}</div>
+          </div>
+        `;
+      }).join('');
+    });
+  }
+
+  // 4. 증명사진 업로드 (마지막 페이지)
+  function handleIdPhoto(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById('idPhotoPreview').src = e.target.result;
+      document.getElementById('idPhotoFrame').classList.add('has-img');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // 5. 신격 데이터베이스 (기존 등장인물 신격 제외)
+  const deitiesPool = [
+    // 그리스·로마 신화 (등장인물 제외)
+    { myth: '그리스·로마 신화', name: '아폴론 (Apollon)', power: '[태양의 화살 & 예언] 고열의 광선 투사 및 수 초 뒤의 미래 궤적을 읽어내는 예지 시각.' },
+    { myth: '그리스·로마 신화', name: '아르테미스 (Artemis)', power: '[은빛 사냥꾼] 어둠 속에서 신체 능력이 극대화되며 표적을 끝까지 추적하는 은빛 에너지 화살 생성.' },
+    { myth: '그리스·로마 신화', name: '아테나 (Athena)', power: '[전술의 이지스] 전장의 변수와 상대의 공격 패턴을 초고속 연산하고 절대 방어막을 전개.' },
+    { myth: '그리스·로마 신화', name: '헤르메스 (Hermes)', power: '[신속의 전령] 공간 도약에 가까운 초고속 기동 및 모든 물리적·전자적 잠금장치를 해제하는 권능.' },
+    { myth: '그리스·로마 신화', name: '아레스 (Ares)', power: '[전장의 광기] 주변에 투쟁 본능을 증폭시키는 파동을 방출하며, 부상을 입을수록 완력과 파괴력이 상승.' },
+    { myth: '그리스·로마 신화', name: '헤파이스토스 (Hephaestus)', power: '[대장장이의 불꽃] 금속과 기계를 즉석에서 재구성해 무기로 연성하고 초고온의 화염을 다룸.' },
+    { myth: '그리스·로마 신화', name: '디오니소스 (Dionysus)', power: '[환각과 도취] 대상의 감각과 이성을 마비시키는 독성 포도덩굴과 짙은 환각 안개를 생성.' },
+    { myth: '그리스·로마 신화', name: '네메시스 (Nemesis)', power: '[인과응보의 천칭] 자신이 입은 피해와 악의를 배로 되돌려주는 반사 및 징벌의 권능.' },
+    { myth: '그리스·로마 신화', name: '타나토스 (Thanatos)', power: '[죽음의 손길] 접촉한 대상의 생명력과 이능력 파장을 급속도로 고갈시키는 사신의 권능.' },
+
+    // 한국 설화 및 신화 (등장인물 제외)
+    { myth: '한국 설화·신화', name: '삼신할미', power: '[생명의 실타래] 상처와 세포를 급속 재생시키며, 타인의 생명력 흐름을 조율하는 치유와 결계의 권능.' },
+    { myth: '한국 설화·신화', name: '도깨비 (두억시니)', power: '[도깨비불 & 금은보화] 푸른 도깨비불로 시야와 정신을 교란하고, 공간에서 둔기와 결계를 소환하는 괴력.' },
+    { myth: '한국 설화·신화', name: '해치 (해태)', power: '[시비곡직의 심판] 거짓과 살의를 간파하며, 부정한 이능력 공격을 삼켜 무효화하는 신수의 권능.' },
+    { myth: '한국 설화·신화', name: '구미호', power: '[여우구슬 & 매혹] 여우구슬을 통해 타인의 기력을 흡수하고, 환술과 현혹으로 적을 조종.' },
+    { myth: '한국 설화·신화', name: '처용', power: '[역신 퇴치의 춤] 악의와 저주, 정신 오염 계열의 이능력을 무력화하고 영역 내 아군을 보호.' },
+    { myth: '한국 설화·신화', name: '웅녀', power: '[인내와 대지의 힘] 극한의 고통을 견뎌내며 강철보다 단단한 신체 방어력과 대지 진동을 일으킴.' },
+    { myth: '한국 설화·신화', name: '지하국대적', power: '[심연의 지배자] 지하와 어둠 속에서 무한에 가까운 완력을 발휘하며 그림자 병사를 사역.' },
+
+    // 일본 신화
+    { myth: '일본 신화', name: '아마테라스 (天照大神)', power: '[타카마가하라의 광휘] 모든 어둠과 은신을 태워 없애는 정화의 백광과 절대적 위압감.' },
+    { myth: '일본 신화', name: '츠쿠요미 (月読命)', power: '[밤의 장막] 달빛이 비치는 영역의 시간 감각을 왜곡하고 대상의 그림자를 고정해 움직임을 봉쇄.' },
+    { myth: '일본 신화', name: '스사노오 (素戔嗚尊)', power: '[폭풍과 야마타노오로치 베기] 거대한 폭풍을 일으키며 모든 결계와 방어구를 양단하는 참격의 권능.' },
+    { myth: '일본 신화', name: '이나리 (稲荷神)', power: '[백호의 신탁] 수많은 여우 분신을 생성해 첩보 및 기습을 수행하며 공간 이동을 구사.' },
+    { myth: '일본 신화', name: '이자나미 (伊邪那美)', power: '[황천의 부패] 만물을 부식시키고 사자의 원념을 불러내어 영역 전체를 황천길로 변모시킴.' },
+    { myth: '일본 신화', name: '라이진 (雷神)', power: '[뇌고의 벽력] 등 뒤의 북을 울려 초고압의 전격 연쇄를 방출하고 신경 반사 속도를 극대화.' },
+
+    // 북유럽 & 이집트 신화
+    { myth: '북유럽 신화', name: '오딘 (Odin)', power: '[궁니르와 룬 문자] 룬 문자를 새겨 공간과 사물에 특수 효과를 부여하며 절대 명중의 투창을 소환.' },
+    { myth: '북유럽 신화', name: '로키 (Loki)', power: '[변신과 기만] 외형·목소리·이능력 파장까지 완벽히 위장하며 상대의 허를 찌르는 트릭스터 권능.' },
+    { myth: '북유럽 신화', name: '펜리르 (Fenrir)', power: '[신살의 송곳니] 어떠한 구속구나 결계도 물어뜯어 파괴하는 포식과 폭주의 권능.' },
+    { myth: '이집트 신화', name: '아누비스 (Anubis)', power: '[심장의 무게] 대상의 죄악과 살의의 무게를 측정하여 영혼에 직접적인 중압과 심판을 내림.' },
+    { myth: '이집트 신화', name: '토트 (Thoth)', power: '[아카식 기록] 한 번 목격한 현상과 이능력의 구조를 완벽히 해독하고 재현하는 지식의 권능.' }
+  ];
+
+  // 등급 가중치: F 확률 가장 낮음(3%), A~B 확률 가장 높음(B: 35%, A: 27%)
+  function rollRank() {
+    const r = Math.random() * 100;
+    if (r < 3) return 'F';
+    if (r < 11) return 'E';
+    if (r < 21) return 'D';
+    if (r < 31) return 'C';
+    if (r < 66) return 'B';
+    if (r < 93) return 'A';
+    return 'S';
+  }
+
+  function generateAwakening() {
+    const nameVal = document.getElementById('subjectName').value.trim() || '미지정 피험자';
+    const picked = deitiesPool[Math.floor(Math.random() * deitiesPool.length)];
+    const rank = rollRank();
+
+    document.getElementById('resSubject').textContent = `대상자 : ${nameVal}`;
+    document.getElementById('resMyth').textContent = picked.myth;
+    document.getElementById('resDeity').textContent = picked.name;
+    document.getElementById('resPower').textContent = picked.power;
+
+    const rankEl = document.getElementById('resRank');
+    rankEl.textContent = rank + '급';
+    rankEl.className = 'rank-badge rank-' + rank;
+  }
+
+  renderRoster();
+</script>
+</body>
+</html>
